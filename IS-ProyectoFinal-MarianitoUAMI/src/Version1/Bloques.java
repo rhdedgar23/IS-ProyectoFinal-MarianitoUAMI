@@ -3,6 +3,7 @@ package Version1;
 import java.awt.Image;
 import java.awt.Rectangle;
 import java.net.URL;
+
 public class Bloques {
     Image icon;
     URL url;
