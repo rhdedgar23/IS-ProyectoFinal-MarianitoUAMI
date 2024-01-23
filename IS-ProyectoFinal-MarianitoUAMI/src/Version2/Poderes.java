@@ -22,10 +22,10 @@ public class Poderes {
     public Poderes(int x, int y){
         this.x = x;
         this.y = y;
-        this.largo = 46;
-        this.ancho = 50;
-        this.r = new Rectangle(x, y, largo, ancho);
-        this.img_fondo = "hongo.png";
+        largo = 46;
+        ancho = 50;
+        r = new Rectangle(x, y, largo, ancho);
+        img_fondo = "hongo.png";
     }
     
     void mov(){

@@ -1,4 +1,3 @@
-package Version2;
 
 import java.awt.Image;
 import java.net.URL;
@@ -18,18 +17,6 @@ public class Marianito {
     
     int[] yc2 = {428,408,408,403,403,398,398,383,383,373,373,368,368,373,373,378,378,383,383,388,388,393,393,398,398,403,403,408,408,413,413,420,420,438,438,443,443,448,448,433,433,428};
     
-    int [] xc3 = {15,15,25,25,30,30,20,20,25,25,30,30,55,55,70,70,60,60,70,70,75,75,70,70,65,65,50,50,55,55,65,65,60,60,65,65,45,45,40,40,35,35,20,20};
-                
-    int [] yc3 = {448,428,428,408,408,398,398,383,383,373,373,368,368,373,373,378,378,383,383,
-                388,388,393,393,398,398,405,405,408,408,413,413,423,423,442,442,448,448,433,433,
-                438,438,442,442,448};
-    
-    int [] xc4 = {10,10,15,15,20,20,25,25,30,30,20,20,25,25,30,30,55,55,70,70,60,60,70,70,75,75,70,70,65,65,70,70,65,65,60,60,55,55,50,50,55,55,35,35,15,15};
-                
-    int [] yc4 = {438,428,428,413,413,408,408,403,403,398,398,383,383,373,373,368,368,373,373,
-                378,378,383,383,388,388,393,393,398,398,408,408,413,413,418,418,428,428,433,433,
-                438,438,442,442,433,433,438};
-    
     int[] xs = {0,0,5,5,20,20,10,10,15,15,20,20,45,45,55,55,70,70,65,65,60,60,55,55,65,65,70,70,75,75,45,45,15,15,5,5,10,10,5,5};
     
     int[] ys = {428,418,418,413,413,408,408,393,393,383,383,378,378,383,383,378,378,403,403,413,413,418,418,423,423,418,418,413,413,438,438,443,443,448,448,438,438,433,433,428};
@@ -40,48 +27,30 @@ public class Marianito {
     int yc1_i[];
     int xc2_i[];
     int yc2_i[];
-    int xc3_i[];
-    int yc3_i[];
-    int xc4_i[];
-    int yc4_i[];
     int xs_i[];
     int ys_i[];
     
-    int velocidad = 3;
-    boolean saltando = false;
-    boolean cayendo = false;
-    boolean encima = false;
-    boolean izquierda = false;
-    boolean derecha = false;
+    int velocidad=3;
+    boolean saltando=false;
+    boolean cayendo=false;
     int vel_salto = 10;
-    int x_img;
-    int maxX;
-    int maxY;
-    
     Image icon;
     URL url;
-    String imgFondo[] = {"mario.png", "corre1.png", "corre5.png", "corre7.png", "corre2.png", "salta.png",//hacia la derecha
-        "mario2.png", "corre3.png", "corre6.png", "corre8.png", "corre4.png", "salta2.png"//hacia la izquierda
-        };
+    String imgFondo[] = {"mario.png", "corre1.png", "corre2.png", "salta.png",
+        "mario2.png", "corre3.png", "corre4.png", "salta2.png"};
     
     public Marianito(){
-        x_img = xp[0];
-        
         xp_i = new int [xp.length];
         yp_i = new int [yp.length];
         xc1_i = new int [xc1.length];
         yc1_i = new int [yc1.length];
         xc2_i = new int [xc2.length];
         yc2_i = new int [yc2.length];
-        xc3_i = new int [xc3.length];
-        yc3_i = new int [xc3.length];
-        xc4_i = new int [xc4.length];
-        yc4_i = new int [xc4.length];
         xs_i = new int [xs.length];
         ys_i = new int [ys.length];
         
         for(int i=0;i<xp.length;i++){
-            xp_i[i]=75-xp[i];
+            xp_i[i]=60-xp[i];
             yp_i[i]=yp[i];
         }
         for(int i=0;i<xc1.length;i++){
@@ -89,40 +58,13 @@ public class Marianito {
             yc1_i[i]=yc1[i];
         }
         for(int i=0;i<xc2.length;i++){
-            xc2_i[i]=75-xc2[i];
+            xc2_i[i]=55-xc2[i];
             yc2_i[i]=yc2[i];
         }
-        for (int i=0; i<xc3.length; i++) {
-            xc3_i[i] = 75-xc3[i];
-            yc3_i[i] = yc3[i]; 
-        }
-        for (int i=0; i<xc4.length; i++) {
-            xc4_i[i] = 75-xc4[i];
-            yc4_i[i] = yc4[i]; 
-        }
         for(int i=0;i<xs.length;i++){
-            xs_i[i]=80-xs[i];
+            xs_i[i]=75-xs[i];
             ys_i[i]=ys[i];
         }
-    }
-    
-    //traversa los arreglos dados x, y,
-    //compara cada elemento y asigna el maximo valor de estos
-    //a las variables globales maxX y maxY
-    void setMax(int []x, int y[]){
-        int max_x = 0;
-        int max_y = 0;
-        
-        for (int i=1; i<x.length; i++) {
-            if(x[max_x]<x[i]){
-                max_x = x[i];
-            }
-            if(y[max_y]<y[i]){
-                max_y = y[i];
-            }
-        }
-        this.maxX = max_x;
-        this.maxX = max_y;
     }
     
     public void mov_derecha(){  
@@ -137,14 +79,6 @@ public class Marianito {
         for(int i=0;i<xc2.length;i++){
             xc2[i]=xc2[i]+velocidad;
             xc2_i[i]=xc2_i[i]+velocidad;
-        }
-        for(int i=0;i<xc3.length;i++){
-            xc3[i]=xc3[i]+velocidad;
-            xc3_i[i]=xc3_i[i]+velocidad;
-        }
-        for(int i=0;i<xc4.length;i++){
-            xc4[i]=xc4[i]+velocidad;
-            xc4_i[i]=xc4_i[i]+velocidad;
         }
         for(int i=0;i<xs.length;i++){
             xs[i]=xs[i]+velocidad;
@@ -165,14 +99,6 @@ public class Marianito {
             xc2[i]=xc2[i]-velocidad;
             xc2_i[i]=xc2_i[i]-velocidad;
         }
-        for(int i=0;i<xc3.length;i++){
-            xc3[i]=xc3[i]-velocidad;
-            xc3_i[i]=xc3_i[i]-velocidad;
-        }
-        for(int i=0;i<xc4.length;i++){
-            xc4[i]=xc4[i]-velocidad;
-            xc4_i[i]=xc4_i[i]-velocidad;
-        }
         for(int i=0;i<xs.length;i++){
             xs[i]=xs[i]-velocidad;
             xs_i[i]=xs_i[i]-velocidad;
@@ -191,14 +117,6 @@ public class Marianito {
             yc2[i]=yc2[i]-vel_salto;
             yc2_i[i]=yc2_i[i]-vel_salto;
         }
-        for(int i=0;i<yc3.length;i++){
-            yc3[i]=yc3[i]-vel_salto; 
-            yc3_i[i]=yc3_i[i]-vel_salto; 
-        }
-        for(int i=0;i<yc4.length;i++){
-            yc4[i]=yc4[i]-vel_salto; 
-            yc4_i[i]=yc4_i[i]-vel_salto; 
-        }
         for(int i=0;i<xs.length;i++){
             ys[i]=ys[i]-vel_salto;
             ys_i[i]=ys_i[i]-vel_salto;
@@ -216,14 +134,6 @@ public class Marianito {
         for(int i=0;i<yc2.length;i++){
             yc2[i]=yc2[i]+vel_salto;
             yc2_i[i]=yc2_i[i]+vel_salto;
-        }
-        for(int i=0;i<yc3.length;i++){
-            yc3[i]=yc3[i]+vel_salto; 
-            yc3_i[i]=yc3_i[i]+vel_salto; 
-        }
-        for(int i=0;i<yc4.length;i++){
-            yc4[i]=yc4[i]+vel_salto; 
-            yc4_i[i]=yc4_i[i]+vel_salto; 
         }
         for(int i=0;i<xs.length;i++){
             ys[i]=ys[i]+vel_salto;

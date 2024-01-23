@@ -227,6 +227,7 @@ public class Ventana extends JPanel{
             //si el elemento es una tuberia
             if(ListaBloques.get(i).tipo.equals("Tuberia")){
                 System.out.println("Tuberia");
+                
                 if(marianito.intersects(ListaBloques.get(i).x2-avanceX, ListaBloques.get(i).y2, ListaBloques.get(i).ancho2, ListaBloques.get(i).largo2)){
                     System.out.println("Mario intersecta Tuberia");
                     if(M.derecha){
