@@ -15,6 +15,7 @@ import java.util.LinkedList;
 import java.util.Random;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 public class Ventana extends JPanel{
@@ -29,8 +30,8 @@ public class Ventana extends JPanel{
     Image icons[];
     
     LinkedList <Poderes> ListaPoderes;
-    int puntuaje = 0;
-    int vida = 0;
+    int puntaje = 0;
+    int vidas = 0;
     int tiempo = 1000;
     AudioClip musica;
     boolean choca[];
@@ -38,15 +39,18 @@ public class Ventana extends JPanel{
     int sec2 = 0;
     int cont = 0;
     
+    LinkedList <Enemigos> ListaEnemigos;
+    boolean termina = false;
+    
     public Ventana() {
         this.ListaBloques = new LinkedList();
         this.imgFondo = "mundo.png";
         this.url = Ventana.class.getResource(imgFondo);
         this.M = new Marianito();
         this.marianito = new Polygon();
-        this.avanceX = 0;
-        this.avanceY = 0;
-        this.sec = 0;
+        this.avanceX = 0;//avance de marianito en x
+        this.avanceY = 0;//avance de marianito en y 
+        this.sec = 0;//avance de la secuencia de movimiento de marianito
         this.icons = new Image[3];
         
         choca=new boolean[4];
@@ -55,6 +59,50 @@ public class Ventana extends JPanel{
         choca[2]=false;
         choca[3]=false;
         ListaPoderes = new LinkedList();
+        
+        ListaEnemigos = new LinkedList();
+        
+        marianito.xpoints = M.xp;
+        marianito.ypoints = M.yp;
+        marianito.npoints = M.xp.length;
+        
+        ListaBloques.add(new Bloques("Ladrillo", 640, 168, false));
+        ListaEnemigos.add(new Enemigos("goomba", 640));
+        ListaBloques.add(new Bloques("Moneda", 700, 168, true));
+        ListaBloques.add(new Bloques("Ladrillo", 760, 168, false));
+        ListaEnemigos.add(new Enemigos("goomba", 760));
+        ListaBloques.add(new Bloques("Tuberia", 1000, 307, false));
+        ListaEnemigos.add(new Enemigos("goomba", 1200));
+        ListaEnemigos.add(new Enemigos("koopa", 1300));
+        ListaBloques.add(new Bloques("Ladrillo_plano", 1250, 168, false));
+        ListaBloques.add(new Bloques("Moneda", 1310, 168, true));
+        ListaBloques.add(new Bloques("Ladrillo", 1370, 168, false));
+        ListaBloques.add(new Bloques("Tuberia", 1500, 307, false));
+        ListaBloques.add(new Bloques("Ladrillo_plano", 1700, 168, false));
+        ListaBloques.add(new Bloques("Ladrillo_plano", 1760, 168, false));
+        ListaBloques.add(new Bloques("Ladrillo", 1820, 168, false));
+
+    }
+    
+    public void reset(){
+        this.ListaBloques = new LinkedList();
+        this.imgFondo = "mundo.png";
+        this.url = Ventana.class.getResource(imgFondo);
+        this.M = new Marianito();
+        this.marianito = new Polygon();
+        this.avanceX = 0;//avance de marianito en x
+        this.avanceY = 0;//avance de marianito en y 
+        this.sec = 0;//avance de la secuencia de movimiento de marianito
+        this.icons = new Image[3];
+        
+        choca=new boolean[4];
+        choca[0]=false;
+        choca[1]=false;
+        choca[2]=false;
+        choca[3]=false;
+        ListaPoderes = new LinkedList();
+        
+        ListaEnemigos = new LinkedList();
         
         marianito.xpoints = M.xp;
         marianito.ypoints = M.yp;
@@ -71,7 +119,6 @@ public class Ventana extends JPanel{
         ListaBloques.add(new Bloques("Ladrillo_plano", 1700, 168, false));
         ListaBloques.add(new Bloques("Ladrillo_plano", 1760, 168, false));
         ListaBloques.add(new Bloques("Ladrillo", 1820, 168, false));
-
     }
     
     @Override
@@ -94,9 +141,9 @@ public class Ventana extends JPanel{
         g.drawString("MUNDO", 40, 30);
         g.drawString("1-1", 40, 60);
         g.drawString("MARIO", 300, 30);
-        g.drawString(""+vida, 300, 60);
+        g.drawString(""+vidas, 300, 60);
         g.drawString("MONEDAS", 600, 30);
-        g.drawString("" + puntuaje, 600, 60);
+        g.drawString("" + puntaje, 600, 60);
         g.drawString("TIEMPO", 1000, 30);
         g.drawString(""+tiempo, 1000, 60);
         
@@ -183,7 +230,7 @@ public class Ventana extends JPanel{
             
             if(marianito.intersects(re)){
                 if(ListaPoderes.get(i).img_fondo.equals("hongo.png")){
-                    vida++;
+                    vidas++;
                     url = Ventana.class.getResource("vida.wav"); 
                     musica = Applet.newAudioClip(url);
                     musica.play();
@@ -191,22 +238,67 @@ public class Ventana extends JPanel{
                 }
             }
         }
-        
-        if(M.saltando){
-            avanceY = avanceY - M.vel_salto;
-            M.salto();
-            if(avanceY == -200){
-                M.saltando = false;
-                M.cayendo = true;
+        for (int i = 0; i < ListaEnemigos.size(); i++) {
+            int d = 1;
+            if(!ListaEnemigos.get(i).muerto){
+                if(ListaEnemigos.get(i).tipo.equals("koopa")){
+                    if(ListaEnemigos.get(i).derecha){
+                    d=1;
+                    }else{
+                        d=3;
+                    }
+                }
+                if(sec2 <= 7){
+                    ListaEnemigos.get(i).img_fondo = ListaEnemigos.get(i).tipo + (d+".png");
+                    url = Ventana.class.getResource(ListaEnemigos.get(i).img_fondo);
+                    ListaEnemigos.get(i).icon = new ImageIcon(url).getImage();  
+                }else{
+                    ListaEnemigos.get(i).img_fondo = ListaEnemigos.get(i).tipo + (d+1)+".png";
+                    url = Ventana.class.getResource(ListaEnemigos.get(i).img_fondo);
+                    ListaEnemigos.get(i).icon = new ImageIcon(url).getImage(); 
+                }
+                g.drawImage(ListaEnemigos.get(i).icon, ListaEnemigos.get(i).x-avanceX,ListaEnemigos.get(i).y, null);  
+                Rectangle re = new Rectangle(ListaEnemigos.get(i).x-avanceX,ListaEnemigos.get(i).y,ListaEnemigos.get(i).alto,ListaEnemigos.get(i).ancho);
+                for(int j = 0; j<ListaBloques.size(); j++){
+                    if(ListaBloques.get(j).tipo.equals("Tuberia")){
+                        if(re.intersects(ListaBloques.get(j).x2-avanceX, ListaBloques.get(j).y2, ListaBloques.get(j).ancho2, ListaBloques.get(j).largo2)){
+                            if(ListaEnemigos.get(i).derecha){
+                                ListaEnemigos.get(i).derecha = false;
+                                ListaEnemigos.get(i).izquierda = true;
+                            }else{
+                                ListaEnemigos.get(i).derecha = true;
+                                ListaEnemigos.get(i).izquierda = false;
+                            }
+                            break;
+                        }
+                    }
+                }
+                ListaEnemigos.get(i).mov();
+                if(marianito.intersects(ListaEnemigos.get(i).x-avanceX, ListaEnemigos.get(i).y, 48, 48)){
+                    if(avanceY==0){
+                        url = Ventana.class.getResource("muerte.wav"); 
+                        musica = Applet.newAudioClip(url);
+                        musica.play();
+                        termina = true;
+                    }else{
+                        ListaEnemigos.get(i).muerto = true;
+                        
+                    }
+                }
+            }else{
+                ListaEnemigos.get(i).img_fondo = ListaEnemigos.get(i).tipo + "_M.png";
+                url = Ventana.class.getResource(ListaEnemigos.get(i).img_fondo);
+                ListaEnemigos.get(i).icon = new ImageIcon(url).getImage();
+                g.drawImage(ListaEnemigos.get(i).icon, ListaEnemigos.get(i).x-avanceX,448-ListaEnemigos.get(i).img_M, null);
             }
         }
+        
+        
+        if(M.saltando){
+            movimiento("Arriba");
+        }
         if(M.cayendo){
-            avanceY = avanceY + M.vel_salto;
-            M.caida();
-            if(avanceY == 0){
-                M.cayendo = false;
-                movimiento("Parado");
-            }
+            movimiento("Abajo");
         }
         if(M.cayendo || M.saltando){
             g.drawImage(M.icon, avanceX, 378+avanceY, null);
@@ -274,7 +366,7 @@ public class Ventana extends JPanel{
                                 //si en ese brinco se encuentra con un ladrillo moneda
                                 if(ListaBloques.get(i).tipo.equals("Moneda")){
                                     //aumentamos el puntuaje
-                                    puntuaje ++;
+                                    puntaje ++;
                                     
                                     //tocamos la musica
                                     url = Ventana.class.getResource("moneda.wav"); 
@@ -355,11 +447,19 @@ public class Ventana extends JPanel{
         icons[1] = new ImageIcon(url).getImage();
         icons[2] = new ImageIcon(url).getImage();
         
+        //para cada bloque en la lista de bloques
         for(int i=0; i<ListaBloques.size(); i++){
+            //obtenemos el url del sprite del bloque
             url = Ventana.class.getResource(ListaBloques.get(i).img_fondo);
+            //y asignamos el sprite a su variable icon
             ListaBloques.get(i).icon = new ImageIcon(url).getImage();
         }
-        
+        //y hacemos lo mismo para la lista de enemigos
+        for (int i = 0; i < ListaEnemigos.size(); i++) {
+            url = Ventana.class.getResource(ListaEnemigos.get(i).img_fondo);
+            ListaEnemigos.get(i).icon = new ImageIcon(url).getImage();
+        }
+        //y tambien lo mismo para marianito en su posicion parado
         url = Ventana.class.getResource(M.imgFondo[0]);
         M.icon = new ImageIcon(url).getImage();
     }
@@ -367,60 +467,138 @@ public class Ventana extends JPanel{
     //metodo para modificar el movimiento de mario
     public void movimiento(String direccion){
         
+        marianito = new Polygon();
+        
         switch(direccion){
             case "Derecha":
                 sec++;
-                M.mov_derecha();
-                //if(!choca()){
-                avanceX += M.velocidad;
-                //}
-                if(!M.saltando && !M.cayendo){
-                    if(sec % 2 == 0){
-                        marianito.xpoints = M.xc2;
-                        marianito.ypoints = M.yc2;
-                        marianito.npoints = M.xc2.length;
-                        url = Ventana.class.getResource(M.imgFondo[2]);
+                //M.mov_derecha();
+                choca[3] = false;
+                
+                if(!choca[2]){
+                    M.izquierda = false;
+                    M.derecha = true;
+                    M.mov_derecha();
+                    avanceX += M.velocidad;
+                    
+                    if(!M.saltando && !M.cayendo){
+                        
+                        switch(sec){
+                            case 1:
+                            case 2:
+                                marianito.xpoints = M.xc1;
+                                marianito.ypoints = M.yc1;
+                                marianito.npoints = M.xc1.length;
+                                M.x_img = marianito.xpoints[1];
+                                url = Ventana.class.getResource(M.imgFondo[1]);
+                                break;
+                            case 3:
+                            case 4:
+                                marianito.xpoints = M.xc3;
+                                marianito.ypoints = M.yc3;
+                                marianito.npoints = M.xc3.length;
+                                M.x_img = marianito.xpoints[1];
+                                url = Ventana.class.getResource(M.imgFondo[2]);
+                                break;
+                            case 5:
+                            case 6:
+                                marianito.xpoints = M.xc2;
+                                marianito.ypoints = M.yc2;
+                                marianito.npoints = M.xc2.length;
+                                M.x_img = marianito.xpoints[1];
+                                url = Ventana.class.getResource(M.imgFondo[4]);
+                            case 7:
+                            case 8:
+                                marianito.xpoints = M.xc4;
+                                marianito.ypoints = M.yc4;
+                                marianito.npoints = M.xc4.length;
+                                M.x_img = marianito.xpoints[1];
+                                url = Ventana.class.getResource(M.imgFondo[3]);
+                                break;
+                        }
                     }
                     else{
-                        marianito.xpoints = M.xc1;
-                        marianito.ypoints = M.yc1;
-                        marianito.npoints = M.xc1.length;
-                        url = Ventana.class.getResource(M.imgFondo[1]);
-                    }
-                }else{
-                    marianito.xpoints = M.xs;
-                    marianito.ypoints = M.ys;
-                    marianito.npoints = M.xs.length;
-                    url = Ventana.class.getResource(M.imgFondo[3]);
+                        marianito.xpoints = M.xs;
+                        marianito.ypoints = M.ys;
+                        marianito.npoints = M.xs.length;
+                        url = Ventana.class.getResource(M.imgFondo[5]);    
+                    }   
+                }
+                else{
+                    marianito.xpoints = M.xp;
+                    marianito.ypoints = M.yp;
+                    marianito.npoints = M.xp.length;
+                    M.x_img = marianito.xpoints[1];
+                    url = Ventana.class.getResource(M.imgFondo[0]);
+                }
+                if(M.encima && !M.saltando){
+                    M.encima = false;
+                    M.cayendo = true;
                 }
                 
                 M.icon = new ImageIcon(url).getImage();
                 break;
             case "Izquierda":
+                choca[2] = false;
                 if(avanceX > 0){
+                    M.izquierda = true;
+                    M.derecha = false;
                     sec++;
-                    M.mov_izquierda();
-                    avanceX = avanceX - M.velocidad;
-                    if(!M.saltando && !M.cayendo){
-                        if(sec % 2 == 0){
-                            marianito.xpoints = M.xc2_i;
-                            marianito.ypoints = M.yc2_i;
-                            marianito.npoints = M.xc2_i.length;
-                            url = Ventana.class.getResource(M.imgFondo[6]);
+                    
+                    if(!choca[3] || (choca[3] && choca[2])){
+                        M.mov_izquierda();
+                        avanceX = avanceX - M.velocidad;
+                        
+                        if(!M.saltando && !M.cayendo){
+                            switch(sec){
+                                case 1:
+                                case 2:
+                                    marianito.xpoints = M.xc1_i;
+                                    marianito.ypoints = M.yc1_i;
+                                    marianito.npoints = M.xc1_i.length;
+                                    url = Ventana.class.getResource(M.imgFondo[7]);
+                                    break;
+                                case 3:
+                                case 4:
+                                    marianito.xpoints = M.xc3_i;
+                                    marianito.ypoints = M.yc3_i;
+                                    marianito.npoints = M.xc3_i.length;
+                                    url = Ventana.class.getResource(M.imgFondo[8]);
+                                    break;
+                                case 5:
+                                case 6:
+                                    marianito.xpoints = M.xc2_i;
+                                    marianito.ypoints = M.yc2_i;
+                                    marianito.npoints = M.xc2_i.length;
+                                    url = Ventana.class.getResource(M.imgFondo[10]);
+                                    break;
+                                case 7:
+                                case 8:
+                                    marianito.xpoints = M.xc4_i;
+                                    marianito.ypoints = M.yc4_i;
+                                    marianito.npoints = M.xc4_i.length;
+                                    url = Ventana.class.getResource(M.imgFondo[9]);
+                                    break;
+                            }
                         }
                         else{
-                            marianito.xpoints = M.xc1_i;
-                            marianito.ypoints = M.yc1_i;
-                            marianito.npoints = M.xc1.length;
-                            url = Ventana.class.getResource(M.imgFondo[5]);
+                            marianito.xpoints = M.xs_i;
+                            marianito.ypoints = M.ys_i;
+                            marianito.npoints = M.xs_i.length;
+                            url = Ventana.class.getResource(M.imgFondo[11]);
                         }
-                    }else{
-                        marianito.xpoints = M.xs_i;
-                        marianito.ypoints = M.ys_i;
-                        marianito.npoints = M.xs_i.length;
-                        url = Ventana.class.getResource(M.imgFondo[7]);
                     }
-                    
+                    else{
+                        marianito.xpoints = M.xp_i;
+                        marianito.ypoints = M.yp_i;
+                        marianito.npoints = M.xp_i.length;
+                        url = Ventana.class.getResource(M.imgFondo[0]);
+                    }
+                    if(M.encima && !M.saltando){
+                        M.encima = false;
+                        M.cayendo = true;
+                    }
+                    M.x_img = 0+avanceX;
                     M.icon = new ImageIcon(url).getImage();
                 }
                 break;
@@ -432,6 +610,7 @@ public class Ventana extends JPanel{
                     marianito.npoints = M.xp.length;
                     url = Ventana.class.getResource(M.imgFondo[0]);
                     M.icon = new ImageIcon(url).getImage();
+                    M.x_img = marianito.xpoints[0];
                 }
                 break;
             case "Parado2":
@@ -440,20 +619,67 @@ public class Ventana extends JPanel{
                     marianito.xpoints = M.xp_i;
                     marianito.ypoints = M.yp_i;
                     marianito.npoints = M.xp_i.length;
-                    url = Ventana.class.getResource(M.imgFondo[4]);
+                    url = Ventana.class.getResource(M.imgFondo[6]);
                     M.icon = new ImageIcon(url).getImage();
                 }
                 break;
             case "Arriba":
                 if(!M.cayendo){
-                    M.saltando = true;
-                    marianito.xpoints = M.xs;
-                    marianito.ypoints = M.ys;
-                    marianito.npoints = M.xs.length;
-                    url = Ventana.class.getResource(M.imgFondo[3]);
+                    M.saltando=true;
+                    if(M.derecha){
+                        marianito.xpoints = M.xs;
+                        marianito.ypoints = M.ys;
+                        marianito.npoints = M.xs.length;
+                        url = Ventana.class.getResource(M.imgFondo[5]);
+                    }
+                    if(M.izquierda){
+                        marianito.xpoints = M.xs_i;
+                        marianito.ypoints = M.ys_i;
+                        marianito.npoints = M.xs_i.length;
+                        url = Ventana.class.getResource(M.imgFondo[11]);
+                    }
                     M.icon = new ImageIcon(url).getImage();
+                    avanceY = avanceY - M.vel_salto;
+                    alturaSalto -= M.vel_salto;
+                    M.salto();
+                    if(alturaSalto==-200){
+                        choca[2] = false;
+                        choca[3] = false;
+                        M.saltando=false;
+                        M.cayendo=true;
+                    }
                 }
+                break;
+            case "Abajo":
+                    if(M.derecha){
+                        marianito.xpoints = M.xs;
+                        marianito.ypoints = M.ys;
+                        marianito.npoints = M.xs.length;
+                        url = Ventana.class.getResource(M.imgFondo[5]);
+                    }
+                    if(M.izquierda){
+                        marianito.xpoints = M.xs_i;
+                        marianito.ypoints = M.ys_i;
+                        marianito.npoints = M.xs_i.length;
+                        url = Ventana.class.getResource(M.imgFondo[11]);
+                    }
+                    M.icon = new ImageIcon(url).getImage();
+                    avanceY = avanceY + M.vel_salto;
+                    alturaSalto += M.vel_salto;
+                    M.caida();
+                    if(avanceY==0){
+                        alturaSalto = 0;
+                        M.cayendo=false;
+                        choca[2] =false;
+                        choca[3] = false;
+                        movimiento("Parado");
+                    }   
+                break;
         }
+        if(sec == 8){
+            sec = 0;
+        }
+        
         colision();
     }
     
@@ -465,7 +691,11 @@ public class Ventana extends JPanel{
         Ventana juego = new Ventana();
         VentanaJuego.add(juego);
         VentanaJuego.setVisible(true);
+        
         juego.imagenesFondo();
+        URL url = Ventana.class.getResource("cancion.wav"); 
+        juego.musica = Applet.newAudioClip(url);
+        juego.musica.loop();
         
         VentanaJuego.addKeyListener(new KeyListener(){
             String tecla;
@@ -496,15 +726,34 @@ public class Ventana extends JPanel{
                     juego.movimiento("Izquierda");
                 }
                 if(tecla.equals("Arriba") || tecla.equals("Up")){
-                    juego.movimiento("Arriba");
+                    if(juego.alturaSalto == 0){
+                        juego.url = Ventana.class.getResource("salto.wav"); 
+                        juego.musica = Applet.newAudioClip(juego.url);
+                        juego.musica.play();
+                        juego.movimiento("Arriba");
+                    }
                 }
             }
         });
         
         while(true){
-            juego.repaint();
-            Thread.sleep(51);
+            if(!juego.termina){
+                juego.repaint();
+                Thread.sleep(47);
+            }else{
+                Object[] opciones={"Si","No"};
+                int n=0;
+                    n=JOptionPane.showOptionDialog(null,"¿Quieres volver a jugar?","Marianito UAMI",JOptionPane.YES_NO_CANCEL_OPTION,JOptionPane.QUESTION_MESSAGE,null,opciones,opciones[1]);
+                if(n==0){
+                    
+                    juego.reset();
+                    juego.imagenesFondo();
+                }else{
+                    juego.musica.stop();
+                    VentanaJuego.dispose();
+                    break;
+                }
+            }
         }
     }
-
 }
