@@ -13,8 +13,11 @@ Lunes -  Maurcio, HU-17 act1: creé una nueva clase desde cero; las caracterías
         Édgar: HU-20 Act1 Agregé los sprites de las monedas físicas en la carpeta imágenes, coin y coin2 en la clase bloques
 Martes - Mauricio: HU-17 Act2. Para esta actividad agregué los rectángulos correspondientes al nuevo tipo de bloque llamado plataforma 
          con sus respecivos sprites en la clase bloques. Lo hice agregando más casos al switch de tipos de bloques en donde 
-         las plataformas tienen un mayor tamaño a comparación de los bloques.
-        Pineda: HU-17 Act2. Modifiqué la clase ventana para implementar el movimiento vertigal de los Koopas alados, esto lo hice de forma
-        similar a la planta piraña implementada en el nivel 2
-        Édgar: HU-20 Act2 agregar en la clase ventana la interacción de marianito con las monedas para aumentar e contador de las monedas y que estas desaparezcan
-Miércoles - Pineda: 
+          las plataformas tienen un mayor tamaño a comparación de los bloques.
+         Pineda: HU-17 Act2. Modifiqué la clase ventana para implementar el movimiento vertigal de los Koopas alados, esto lo hice de forma
+         similar a la planta piraña implementada en el nivel 2
+         Édgar: HU-20 Act2 agregar en la clase ventana la interacción de marianito con las monedas para aumentar e contador de las monedas y que estas desaparezcan
+Miércoles - Pineda: HU-17 Act3. Modificar en la clase Ventana la interacción entre Marianito y la parte superior de las plataformas esto lo hice cambiando el boolenado de caida a flaso al realizar un salto en una de 
+            las plataformas.
+            
+            
