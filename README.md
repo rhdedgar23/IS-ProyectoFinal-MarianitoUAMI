@@ -17,3 +17,4 @@ Martes - Mauricio: HU-17 Act2. Para esta actividad agregué los rectángulos cor
         Pineda: HU-17 Act2. Modifiqué la clase ventana para implementar el movimiento vertigal de los Koopas alados, esto lo hice de forma
         similar a la planta piraña implementada en el nivel 2
         Édgar: HU-20 Act2 agregar en la clase ventana la interacción de marianito con las monedas para aumentar e contador de las monedas y que estas desaparezcan
+Miércoles - Pineda: 
